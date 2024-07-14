@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zeppelin
+  namespace: spark-zeppelin
+  labels:
+    app: zeppelin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zeppelin
+  template:
+    metadata:
+      labels:
+        app: zeppelin
+    spec:
+      serviceAccountName: zeppelin-service-account
+      containers:
+      - name: zeppelin
+        image: apache/zeppelin:0.10.0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ZEPPELIN_ADDR
+          value: "0.0.0.0"
+        - name: ZEPPELIN_PORT
+          value: "8080"
+        - name: SPARK_MASTER
+          value: "spark://spark-master:7077"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zeppelin
+  namespace: spark-zeppelin
+  labels:
+    app: zeppelin
+spec:
+  type: NodePort
+  ports:
+  - name: webui
+    port: 8080
+    targetPort: 8080
+    nodePort: 30082
+  selector:
+    app: zeppelin

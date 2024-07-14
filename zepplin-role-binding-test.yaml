@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: zeppelin-rolebinding
+  namespace: spark-zeppelin
+subjects:
+- kind: ServiceAccount
+  name: zeppelin-service-account
+  namespace: spark-zeppelin
+roleRef:
+  kind: Role
+  name: zeppelin-role
+  apiGroup: rbac.authorization.k8s.io
